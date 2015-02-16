@@ -1,2 +1,5 @@
 *.pyc
-/.idea
+*.json
+*.jl
+.*.swp
+habrahabr/habrahabr/images/
