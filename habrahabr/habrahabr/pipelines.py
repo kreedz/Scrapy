@@ -9,21 +9,22 @@ import json
 import codecs
 
 from sqlalchemy.orm import sessionmaker
-from models import HabrahabrModel, db_connect, create_deals_table
+from models import HabrahabrModel, db_connect, create_habrahabr_table, delete_from_habrahabr_table
 
 
 class HabrahabrPipeline(object):
 
     def __init__(self):
         engine = db_connect()
-        create_deals_table(engine)
+        create_habrahabr_table(engine)
         self.Session = sessionmaker(bind=engine)
+        delete_from_habrahabr_table(engine, self.Session)
 
     def process_item(self, item, spider):
         session = self.Session()
-        deal = HabrahabrModel(**item)
+        habrahabr = HabrahabrModel(**item)
         try:
-            session.add(deal)
+            session.add(habrahabr)
             session.commit()
         except:
             session.rollback()

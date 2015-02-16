@@ -8,16 +8,17 @@ from scrapy.http import Request
 
 
 class HabrSpider(CrawlSpider):
-    name = "habr"
-    allowed_domains = ["habrahabr.ru"]
-    start_urls = ["http://habrahabr.ru"]
+    name = 'habr'
+    allowed_domains = ['habrahabr.ru']
+    start_urls = ['http://habrahabr.ru/posts/top/weekly/']
 
     rules = (
-        Rule(LxmlLinkExtractor(restrict_xpaths=('.//*[@id="nav-pages"]/li/a')), callback='parse_item'),
+        Rule(LxmlLinkExtractor(restrict_xpaths=('.//h1/a[@class="post_title"]')), callback='parse_item'),
+        Rule(LxmlLinkExtractor(restrict_xpaths=('.//*[@id="nav-pages"]/li/a')), follow=True),
     )
 
-    def parse_start_url(self, response):
-        return Request(HabrSpider.start_urls[0], callback=self.parse_item)
+    #def parse_start_url(self, response):
+        #return Request(HabrSpider.start_urls[0], callback=self.parse_item)
 
     def parse_item(self, response):
         xpath = './/div[substring(@class, string-length(@class) - string-length("shortcuts_item") + 1) = "shortcuts_item"]'
@@ -33,5 +34,5 @@ class HabrSpider(CrawlSpider):
             #yield item
             print response.url
             l = ItemLoader(item=HabrahabrItem(), selector=sel, response=response)
-            l.add_xpath('title', 'h1/a[1]/text()')
+            l.add_xpath('title', 'h1/span/text()')
             yield l.load_item()

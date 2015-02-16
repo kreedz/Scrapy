@@ -27,5 +27,7 @@ DATABASE = {
     'database': 'scrape'
 }
 
+DOWNLOAD_DELAY = 0.5
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'habrahabr (+http://www.yourdomain.com)'
