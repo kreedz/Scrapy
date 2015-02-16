@@ -25,6 +25,8 @@ class HabrahabrPipeline(object):
         delete_from_habrahabr_table(engine, self.Session)
 
     def process_item(self, item, spider):
+        if "HabrahabrImageItem" in str(type(item)):
+            return item
         session = self.Session()
         habrahabr = HabrahabrModel(**item)
         try:

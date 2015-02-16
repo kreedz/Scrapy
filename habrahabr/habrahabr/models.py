@@ -25,3 +25,5 @@ class HabrahabrModel(DeclarativeBase):
     __tablename__ = 'habrahabr'
     id = Column(Integer, primary_key=True)
     title = Column('title', String)
+    #image_urls = Column('image_urls', String)
+    #images = Column('images', String)

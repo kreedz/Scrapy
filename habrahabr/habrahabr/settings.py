@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'habrahabr.spiders'
 
 ITEM_PIPELINES = {
     #'habrahabr.pipelines.JsonWriterPipeline': 100,
-    #'habrahabr.pipelines.HabrahabrPipeline': 100,
+    'habrahabr.pipelines.HabrahabrPipeline': 100,
     'habrahabr.pipelines.MyImagesPipeline': 1,
 }
 

@@ -1,5 +1,5 @@
 import scrapy
-from habrahabr.items import HabrahabrItem
+from habrahabr.items import HabrahabrItem, HabrahabrImageItem
 from scrapy.contrib.loader import ItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from scrapy.contrib.spiders import CrawlSpider, Rule
@@ -23,17 +23,9 @@ class HabrSpider(CrawlSpider):
     def parse_item(self, response):
         xpath = './/div[substring(@class, string-length(@class) - string-length("shortcuts_item") + 1) = "shortcuts_item"]'
         for sel in response.xpath(xpath):
-            #item = HabrahabrItem()
-            #item['title'] = t(sel.xpath('h1/a[1]/text()').extract())
-            #item['link'] = sel.xpath('string(h1/a/@href)').extract()
-            #item['tags'] = sel.xpath('div/a[substring(@class, 1, string-length("hub")) = "hub"]/text()').extract()
-            #infopanel_wrapper = sel.xpath('div[@class="infopanel_wrapper"]/div')
-            #item['views'] = infopanel_wrapper.xpath('div[@class="pageviews"]/text()').extract()
-            #item['favorites'] = infopanel_wrapper.xpath('div[@class="favs_count"]/text()').extract()
-            #item['author'] = infopanel_wrapper.xpath('div[@class="author"]/a/text()').extract()
-            #yield item
-            print response.url
             l = ItemLoader(item=HabrahabrItem(), selector=sel, response=response)
             l.add_xpath('title', 'h1/span/text()')
-            l.add_xpath('image_urls', 'div[@class="content html_format"]/img/@src')
+            ll = ItemLoader(item=HabrahabrImageItem(), selector=sel, response=response)
+            ll.add_xpath('image_urls', 'div[@class="content html_format"]/img/@src')
+            yield ll.load_item()
             yield l.load_item()
