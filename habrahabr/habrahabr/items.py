@@ -7,6 +7,7 @@
 
 from scrapy.item import Field, Item
 from scrapy.contrib.loader.processor import TakeFirst, MapCompose
+from w3lib.html import remove_tags
 
 
 def join_http_scheme(value):
@@ -14,13 +15,17 @@ def join_http_scheme(value):
         return "http:" + value
     return value
 
+def strip_wrap(value):
+    return value.strip()
+
 
 class HabrahabrItem(Item):
     title = Field(output_processor=TakeFirst())
-    #link = Field(output_processor=TakeFirst())
-    #tags = Field()
-    #views = Field(output_processor=TakeFirst())
-    #favorites = Field(output_processor=TakeFirst())
-    #author = Field(output_processor=TakeFirst())
+    comments = Field()
     image_urls = Field(input_processor=MapCompose(join_http_scheme))
     images = Field()
+
+
+class HabrahabrComment(Item):
+    comment = Field(input_processor=MapCompose(remove_tags, strip_wrap), output_processor=TakeFirst())
+    habrahabr = Field()

@@ -9,7 +9,7 @@ import json
 import codecs
 
 from sqlalchemy.orm import sessionmaker
-from models import HabrahabrModel, db_connect, create_habrahabr_table, delete_from_habrahabr_table
+from models import Habrahabr, HabrahabrComment, db_connect, create_tables, delete_from_model
 
 from scrapy.contrib.pipeline.images import ImagesPipeline
 from scrapy import Request
@@ -20,15 +20,19 @@ class HabrahabrPipeline(object):
 
     def __init__(self):
         engine = db_connect()
-        create_habrahabr_table(engine)
+        create_tables(engine)
         self.Session = sessionmaker(bind=engine)
-        delete_from_habrahabr_table(engine, self.Session)
+        delete_from_model(Habrahabr, engine, self.Session)
 
     def process_item(self, item, spider):
         session = self.Session()
-        habrahabr = HabrahabrModel(title=item['title'])
+        habrahabr = Habrahabr(title=item['title'])
+        comments_items = item['comments']
         try:
             session.add(habrahabr)
+            for comment_item in comments_items:
+                comment = HabrahabrComment(comment=comment_item['comment'], habrahabr=habrahabr)
+                session.add(comment)
             session.commit()
         except:
             session.rollback()
