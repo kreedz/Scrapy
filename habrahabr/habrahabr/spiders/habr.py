@@ -1,5 +1,5 @@
 import scrapy
-from habrahabr.items import HabrahabrItem, HabrahabrImageItem
+from habrahabr.items import HabrahabrItem
 from scrapy.contrib.loader import ItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from scrapy.contrib.spiders import CrawlSpider, Rule
@@ -25,7 +25,5 @@ class HabrSpider(CrawlSpider):
         for sel in response.xpath(xpath):
             l = ItemLoader(item=HabrahabrItem(), selector=sel, response=response)
             l.add_xpath('title', 'h1/span/text()')
-            ll = ItemLoader(item=HabrahabrImageItem(), selector=sel, response=response)
-            ll.add_xpath('image_urls', 'div[@class="content html_format"]/img/@src')
-            yield ll.load_item()
+            l.add_xpath('image_urls', 'div[@class="content html_format"]/img/@src')
             yield l.load_item()

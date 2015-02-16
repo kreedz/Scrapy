@@ -22,11 +22,5 @@ class HabrahabrItem(Item):
     #views = Field(output_processor=TakeFirst())
     #favorites = Field(output_processor=TakeFirst())
     #author = Field(output_processor=TakeFirst())
-    #image_urls = Field(input_processor=MapCompose(join_http_scheme))
-    #images = Field()
-    #image_paths = Field()
-
-
-class HabrahabrImageItem(Item):
     image_urls = Field(input_processor=MapCompose(join_http_scheme))
     images = Field()
