@@ -35,7 +35,7 @@ DATABASE = {
     'host': 'localhost',
     'port': '5432',
     'username': 'kreedz',
-    'password': '***REMOVED***',
+    'password': '',
     'database': 'scrape'
 }
 
