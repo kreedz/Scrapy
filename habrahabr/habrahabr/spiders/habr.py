@@ -4,6 +4,7 @@ from scrapy.contrib.loader import ItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
+from scrapy.http import Request
 
 
 class HabrSpider(CrawlSpider):
@@ -14,6 +15,9 @@ class HabrSpider(CrawlSpider):
     rules = (
         Rule(LxmlLinkExtractor(restrict_xpaths=('.//*[@id="nav-pages"]/li/a')), callback='parse_item'),
     )
+
+    def parse_start_url(self, response):
+        return Request(HabrSpider.start_urls[0], callback=self.parse_item)
 
     def parse_item(self, response):
         xpath = './/div[substring(@class, string-length(@class) - string-length("shortcuts_item") + 1) = "shortcuts_item"]'
@@ -27,6 +31,7 @@ class HabrSpider(CrawlSpider):
             #item['favorites'] = infopanel_wrapper.xpath('div[@class="favs_count"]/text()').extract()
             #item['author'] = infopanel_wrapper.xpath('div[@class="author"]/a/text()').extract()
             #yield item
+            print response.url
             l = ItemLoader(item=HabrahabrItem(), selector=sel, response=response)
             l.add_xpath('title', 'h1/a[1]/text()')
             yield l.load_item()
