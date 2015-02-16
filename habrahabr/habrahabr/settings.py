@@ -14,7 +14,17 @@ SPIDER_MODULES = ['habrahabr.spiders']
 NEWSPIDER_MODULE = 'habrahabr.spiders'
 
 ITEM_PIPELINES = {
-    'habrahabr.pipelines.JsonWriterPipeline': 100,
+    #'habrahabr.pipelines.JsonWriterPipeline': 100,
+    'habrahabr.pipelines.HabrahabrPipeline': 100,
+}
+
+DATABASE = {
+    'drivername': 'postgres',
+    'host': 'localhost',
+    'port': '5432',
+    'username': 'kreedz',
+    'password': '***REMOVED***',
+    'database': 'scrape'
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
