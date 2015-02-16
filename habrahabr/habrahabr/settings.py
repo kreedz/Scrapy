@@ -7,6 +7,7 @@
 #
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
+import os
 
 BOT_NAME = 'habrahabr'
 
@@ -15,8 +16,19 @@ NEWSPIDER_MODULE = 'habrahabr.spiders'
 
 ITEM_PIPELINES = {
     #'habrahabr.pipelines.JsonWriterPipeline': 100,
-    'habrahabr.pipelines.HabrahabrPipeline': 100,
+    #'habrahabr.pipelines.HabrahabrPipeline': 100,
+    'habrahabr.pipelines.MyImagesPipeline': 1,
 }
+
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+IMAGES_STORE = os.path.join(BASE_DIR, 'images')
+
+IMAGES_THUMBS = {
+    'small': (50, 50),
+    'big': (270, 270),
+}
+
+IMAGES_EXPIRES = 90
 
 DATABASE = {
     'drivername': 'postgres',

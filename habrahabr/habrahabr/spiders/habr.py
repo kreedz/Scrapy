@@ -9,8 +9,8 @@ from scrapy.http import Request
 
 class HabrSpider(CrawlSpider):
     name = 'habr'
-    allowed_domains = ['habrahabr.ru']
-    start_urls = ['http://habrahabr.ru/posts/top/weekly/']
+    allowed_domains = ['habrahabr.ru', 'habrastorage.org']
+    start_urls = ['http://habrahabr.ru/']
 
     rules = (
         Rule(LxmlLinkExtractor(restrict_xpaths=('.//h1/a[@class="post_title"]')), callback='parse_item'),
@@ -35,4 +35,5 @@ class HabrSpider(CrawlSpider):
             print response.url
             l = ItemLoader(item=HabrahabrItem(), selector=sel, response=response)
             l.add_xpath('title', 'h1/span/text()')
+            l.add_xpath('image_urls', 'div[@class="content html_format"]/img/@src')
             yield l.load_item()
