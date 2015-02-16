@@ -2,4 +2,4 @@
 *.json
 *.jl
 .*.swp
-habrahabr/habrahabr/images/
+scrapeImgAndSaveOtherDataToDBOrm/habrahabr/images/
