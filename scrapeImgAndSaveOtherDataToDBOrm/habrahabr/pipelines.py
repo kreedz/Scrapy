@@ -27,7 +27,7 @@ class HabrahabrPipeline(object):
     def process_item(self, item, spider):
         session = self.Session()
         habrahabr = Habrahabr(title=item['title'])
-        comments_items = item['comments']
+        comments_items = getattr(item, 'comments', [])
         try:
             session.add(habrahabr)
             for comment_item in comments_items:

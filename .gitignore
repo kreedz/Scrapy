@@ -2,4 +2,6 @@
 *.json
 *.jl
 .*.swp
+*.log
 scrapeImgAndSaveOtherDataToDBOrm/habrahabr/images/
+scrapeImgAndSaveOtherDataToDBOrm/job/
