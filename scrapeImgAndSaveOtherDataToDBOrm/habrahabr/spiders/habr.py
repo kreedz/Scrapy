@@ -1,10 +1,11 @@
-import scrapy
+#import scrapy
 from habrahabr.items import HabrahabrItem, HabrahabrComment
 from scrapy.contrib.loader import ItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
 from scrapy.http import Request
+from scrapy import log
 
 
 class HabrSpider(CrawlSpider):
@@ -16,6 +17,11 @@ class HabrSpider(CrawlSpider):
         Rule(LxmlLinkExtractor(restrict_xpaths=('.//h1/a[@class="post_title"]')), callback='parse_item'),
         Rule(LxmlLinkExtractor(restrict_xpaths=('.//*[@id="nav-pages"]/li/a')), follow=True),
     )
+
+    def __init__(self, category=None, *args, **kwargs):
+        super(HabrSpider, self).__init__(*args, **kwargs)
+        log.ScrapyFileLogObserver(open('debug.log', 'w'), level=log.DEBUG).start()
+        log.ScrapyFileLogObserver(open('error.log', 'w'), level=log.ERROR).start()
 
     def parse_item(self, response):
         xpath = './/div[@class="content_left"]'

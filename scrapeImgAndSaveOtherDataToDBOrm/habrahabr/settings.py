@@ -17,7 +17,7 @@ NEWSPIDER_MODULE = 'habrahabr.spiders'
 ITEM_PIPELINES = {
     #'habrahabr.pipelines.JsonWriterPipeline': 100,
     'habrahabr.pipelines.HabrahabrPipeline': 100,
-    'habrahabr.pipelines.MyImagesPipeline': 1,
+    #'habrahabr.pipelines.MyImagesPipeline': 1,
 }
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
