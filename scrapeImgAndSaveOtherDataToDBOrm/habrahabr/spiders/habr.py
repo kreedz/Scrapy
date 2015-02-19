@@ -1,7 +1,6 @@
 #import scrapy
 from habrahabr.items import HabrahabrItem, HabrahabrComment
 from scrapy.contrib.loader import ItemLoader
-from scrapy.contrib.loader.processor import TakeFirst
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
 from scrapy.http import Request
@@ -10,7 +9,7 @@ from scrapy import log
 
 class HabrSpider(CrawlSpider):
     name = 'habr'
-    allowed_domains = ['habrahabr.ru', 'habrastorage.org']
+    allowed_domains = ['habrahabr.ru']
     start_urls = ['http://habrahabr.ru/']
 
     rules = (
