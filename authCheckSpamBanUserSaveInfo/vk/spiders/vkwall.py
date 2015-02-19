@@ -11,7 +11,7 @@ import os
 import json
 
 
-def get_spam_words(filename):
+def get_spam_words_from_file(filename):
     with codecs.open(filename, 'r', encoding='utf-8') as f:
         return [spaw_word.strip() for spaw_word in f.readlines()]
 
@@ -27,7 +27,7 @@ class VkwallSpider(InitSpider):
     login_page = 'https://vk.com/login.php'
 
     txt_dir = 'txt'
-    spam_words = get_spam_words(os.path.join(txt_dir, 'spam_words.txt'))
+    spam_words = get_spam_words_from_file(os.path.join(txt_dir, 'spam_words.txt'))
     auth_data = os.path.join(txt_dir, 'auth_data.txt')
 
     def init_request(self):
@@ -56,7 +56,7 @@ class VkwallSpider(InitSpider):
         for s in sel:
             wall_text = s.xpath('div[@class="wall_text"]')
             text = wall_text.xpath('div/div[@class="wall_post_text"]').extract()
-            spam_words = self.get_spam_words(text)
+            spam_words = self.get_spam_words_from_msg(text)
             if spam_words:
                 l = ItemLoader(item=VkItem(), selector=s, response=response)
                 l.add_value('id', wall_text.xpath('div/a/@data-from-id').extract())
@@ -67,7 +67,7 @@ class VkwallSpider(InitSpider):
                 yield l.load_item()
                 #yield Request(get_posts_url, callback=self.parse)
 
-    def get_spam_words(self, text):
+    def get_spam_words_from_msg(self, text):
         if text:
             text = text[0]
         spam_words = []
