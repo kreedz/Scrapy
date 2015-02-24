@@ -46,12 +46,12 @@ def get_url_hided_replies(js_str, main_page):
     rnd = str(randrange(1, 100000))
     post_id = js_str[js_str.find("'")+1 : js_str.rfind("'")]
     params = {
-        "_rndVer": rnd,
-        "act": "get_replies",
-        "al":"-1",
-        "cont": "replies" + post_id,
-        "count": "false",
-        "post": post_id
+        '_rndVer': rnd,
+        'act': 'get_replies',
+        'al': '-1',
+        'cont': 'replies' + post_id,
+        'count': 'false',
+        'post': post_id
     }
     return main_page + '/al_wall.php?' + urllib.urlencode(params)
 
@@ -127,10 +127,9 @@ class VkwallSpider(InitSpider):
             yield i.load_item()
 
     def get_replies_items(self, response):
-        regex = ur'id.{2,3}reply_delete-([\d_]+?)\\?".+?data-from-id.{2,3}?([\d\-]+?)''\\?".*?\>(.+?)\<\\?/a\>' \
-                '.+?wall_reply_text.{1,2}\>?(.+?)\<\\?/div\>.+?rel_date.*?"\>(.+?)\<\\?/span\>'
+        regex = r'id.{2,3}reply_delete-([\d_]+?)\\?".+?data-from-id.{2,3}?([\d\-]+?)\\?".*?\>(.+?)\<\\?/a\>' \
+                r'.+?wall_reply_text.{1,2}\>?(.+?)\<\\?/div\>.+?rel_date.*?"\>(.+?)\<\\?/span\>'
         m = re.finditer(regex, response.body_as_unicode())
-        import ipdb; ipdb.set_trace()
         items = []
         for i in m:
             text = i.group(4)
