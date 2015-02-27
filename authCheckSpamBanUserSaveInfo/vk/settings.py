@@ -10,3 +10,5 @@ USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31
 ITEM_PIPELINES = {
     'vk.pipelines.JsonWriterPipeline': 100,
 }
+
+COOKIES_DEBUG = True

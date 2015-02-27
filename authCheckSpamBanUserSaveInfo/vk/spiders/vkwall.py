@@ -56,6 +56,14 @@ def get_url_hided_replies(js_str, main_page):
     return main_page + '/al_wall.php?' + urllib.urlencode(params)
 
 
+class Offset(object):
+    def __init__(self):
+        self.offset = 10
+    def __call__(self):
+        self.offset += 10
+        return self.offset
+
+
 class VkwallSpider(InitSpider):
     name = 'vkwall'
     allowed_domains = ['vk.com']
@@ -67,7 +75,10 @@ class VkwallSpider(InitSpider):
     spam_words_from_file = get_spam_words_from_file(os.path.join(txt_dir, 'spam_words.txt'))
     auth_data = os.path.join(txt_dir, 'auth_data.txt')
 
-    days_count_to_parse = 5
+    days_count_to_parse = 10
+
+    posts_offset = Offset()
+    group_id = 0
 
     def init_request(self):
         return Request(url=self.login_page, callback=self.login)
@@ -92,6 +103,7 @@ class VkwallSpider(InitSpider):
         if not sel:
             self.log('posts are not find')
             return
+        self.group_id = response.xpath('.//div[@id="group_followers"]/a/@href').re('group.=(\d+?)$')[0]
         for s in sel:
             wall_text = s.xpath('div[@class="wall_text"]')
             text = wall_text.xpath('div/div[@class="wall_post_text"]').extract()
@@ -120,15 +132,14 @@ class VkwallSpider(InitSpider):
                     html_response = HtmlResponse(url=response.url, body=raw_html)
                     for i in self.get_replies_items(html_response):
                         yield i.load_item()
-            #yield Request(get_posts_url, callback=self.parse)
+        yield Request(url=self.get_next_msgs_url(), method='POST', callback=self.parse, body=self.get_post_body_for_next_msgs())
 
     def get_hided_items(self, response):
         for i in self.get_replies_items(response):
             yield i.load_item()
 
     def get_replies_items(self, response):
-        regex = r'id.{2,3}reply_delete-([\d_]+?)\\?".+?data-from-id.{2,3}?([\d\-]+?)\\?".*?\>(.+?)\<\\?/a\>' \
-                r'.+?wall_reply_text.{1,2}\>?(.+?)\<\\?/div\>.+?rel_date.*?"\>(.+?)\<\\?/span\>'
+        regex = r'id.{2,3}reply_delete-([\d_]+?)\\?".+?data-from-id.{2,3}?([\d\-]+?)\\?".*?\>(.+?)\<\\?/a\>.+?wall_reply_text.{1,2}\>?(.+?)\<\\?/div\>.+?rel_date.*?"\>(.+?)\<\\?/span\>'
         m = re.finditer(regex, response.body_as_unicode())
         items = []
         for i in m:
@@ -143,3 +154,17 @@ class VkwallSpider(InitSpider):
                 l.add_value('words', spam_words)
                 items.append(l)
         return items
+
+    def get_next_msgs_url(self):
+        return self.main_page + '/al_wall.php'
+
+    def get_post_body_for_next_msgs(self):
+        body = {
+            'act': 'get_wall',
+            'al': '1',
+            'fixed': '',
+            'offset': self.posts_offset.offset,
+            'group_id': '-' + self.group_id,
+            'type': 'all'
+        }
+        return urllib.urlencode(body)
